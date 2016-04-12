@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>com.pajinke.ws</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>api</artifactId>
+    <!-- 每个POM文件都要对应一个packaging 如果不写则默认为jar包(约定优于配置)，如果是管理其他pom的的则是POM，parent模块里它就是POM
+    来自许晓斌的Maven实战：http://www.infoq.com/cn/news/2011/06/xxb-maven-9-package 苍了天了怎么写的这么好 -->
+    <packaging>war</packaging>
+    <name>api</name>
+    <url>http://maven.apache.org</url>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pajinke.ws</groupId>
+            <artifactId>service</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <!-- log4j slf4j:Simple Logging Facade for Java 它只定义了一个接口，slf4j-log12是他们俩中间的适配器 -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <!-- 用的是1.x的所以是asl 如果是2.x直接就是jackson-mapper jackson-core -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <!-- 还有maven-resource-plugin用来打源码的包，还有doc的插件打doc包等等 -->
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <warName>hypothetical</warName>
+                </configuration>
+                <!-- 可以指定一个filter配置文件
+                <configuration>
+                    <filters>
+                        <filter>conf/config.prop</filter>
+                    </filters> -->
+
+                    <!--
+                    <webResources>
+                        <resource> -->
+                            <!-- 以下内容由Leo翻译自maven.apache 所有maven工程都是这种目录结构src/main/java
+                            打成的war包里目录也是固定的，所以这里的directory说的是除了src/main/java|resources|webapp之外的目录，并且是相对pom.xml的路径
+                            <directory>resource2</directory>
+                            默认情况下resource2的内容是直接拷贝到war包的根目录下的，这个targetPath是说把资源放到指定路径
+                            <targetPath>WEB-INF/classes</targetPath> -->
+
+                            <!-- filtering一般是和filters一起用，还有include和exclude，并且如果include和exclude有重叠的话，exclude优先级高
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>**/*.jpg</include>
+                                <include>*pattern2</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*.jar</exclude>
+                                <exclude>*pattern3/pattern3</exclude>
+                            </excludes>
+                        </resource>
+                    </webResources>
+                </configuration> -->
+
+                <!-- 如果没加过滤条件，打包的时候src/main/java目录下的java文件才会进war包，比如我们喜欢把mybatis的.xml文件和java类放一起
+                    这时候可以用这个方法来解决
+                <execution>
+                    <id>copy-xmls3</id>
+                    <phase>process-sources</phase>
+                    <goals>
+                        <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+
+                        <outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/classes/com360/rsf</outputDirectory>
+                        <resources>
+                            <resource>
+                                <directory>${basedir}/src/main/java/com360/rsf</directory>
+                                <includes>
+                                    <include>*.xml</include>
+                                </includes>
+                            </resource>
+                        </resources>
+                    </configuration>
+                </execution> -->
+            </plugin>
+        </plugins>
+    </build>
+</project>

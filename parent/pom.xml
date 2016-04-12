@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.pajinke.ws</groupId>
+    <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>api</module>
+        <module>service</module>
+        <module>dao</module>
+        <module>utils</module>
+    </modules>
+
+
+    <!-- 用properties是想统一管理一下版本号 -->
+    <properties>
+        <!-- 指定maven有啥编码来读取源码及文档 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- spring版本号 -->
+        <spring.version>3.2.5.RELEASE</spring.version>
+
+        <servlet.version>2.5</servlet.version>
+    </properties>
+
+    <!-- 用manage之后父模块和子模块中不会引入依赖，只是为了让子模块继承这些配置，配合上面的版本号，子模块中是需要声明GA即可不用声明V -->
+    <!-- 这样能够在父模块中统一管理子模块，也避免了版本号不一致问题。 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- spring相关 core是spring核心类没啥说的 -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <!-- 从包里的内容来看是和http相关的，包括手动处理servlet和一些filter -->
+            <!-- webmvc和这个jar包类似，但是它是springMVC的实现并且依赖web的 -->
+            <!-- 暂时不用这个
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency> -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <!-- 对spring核心的拓展，里面有ApplicationContext之类的上下文，还用来支持各种模板引擎 -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <!-- IOC需要用这个 -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <!-- servlet api -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${servlet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>4.1.6.RELEASE</version>
+            </dependency>
+            <!-- log4j slf4j:Simple Logging Facade for Java 它只定义了一个接口，slf4j-log12是他们俩中间的适配器 -->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.6.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.6.5</version>
+            </dependency>
+
+            <!-- jackson 1.x的版本都是codehaus 2.x的版本都是fastxml -->
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>1.9.12</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>1.9.12</version>
+            </dependency>
+
+            <!-- 阿里的durid简直业内良心 https://github.com/alibaba/druid/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>1.0.18</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>9.4.1208.jre7</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- pluginManagement由于maven内置了该插件与生命周期绑定，所以子模块不用配置了compiler了，这个跟dependencyManagement正好相反 -->
+    <!-- 如果需要子模块配置不同的插件则应该用maven-surefire-plugin来实现 -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.5.1</version>
+                    <configuration>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <!-- 以下内容由Leo翻译自maven.apache.org -->
+                        <!-- 还可以指定本地的jdk来编译
+                        <executable>${JAVA_1_7_HOME}/bin/javac</executable> -->
+                        <!-- 在settings.xml里配上
+                        <profiles>
+                            <profile>
+                                <id>compiler</id>
+                                <properties>
+                                    <JAVA_1_7_HOME>C:\Program Files\Java\jdk1.7.0_60</JAVA_1_7_HOME>
+                                </properties>
+                            </profile>
+                        </profiles> -->
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
