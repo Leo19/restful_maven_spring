@@ -1,0 +1,120 @@
+﻿drop table dw_label_data_tab;
+create table dw_label_data_tab(
+	dw_id serial primary key,
+	client_no 	varchar(50), --一账通客户号
+	party_no	varchar(50), --集团客户号
+	attr_gender	varchar(10), --性别
+	attr_age	int,--年龄
+	attr_age_range	varchar(10), --年龄范围
+	attr_constellation	varchar(10),--星座
+	attr_zodiac	varchar(10),--属相
+	attr_birth_province varchar(20),--出生地省份
+	attr_birth_city		varchar(20),--出生地城市
+	attr_live_province	varchar(20),--现居住地省份
+	attr_live_city		varchar(20),--现居住地城市
+	attr_marital_status_cd	varchar(10),--婚姻状况代码
+	attr_family_income	int,--家庭年收入
+	attr_reg_channel_cd	varchar(10), --注册渠道代码
+	attr_reg_source		varchar(10), --注册来源
+	attr_customer_level_cd	varchar(10), --用户等级
+	attr_upgraded_reg_source	varchar(10), --用户升级来源
+	attr_reg_ios_ind	varchar(10), --iOS注册标识
+	attr_reg_andriod_ind	varchar(10), --安卓注册标识
+	attr_reg_web_app_ind	varchar(10), --Web注册且App使用标识
+	attr_blacklist_ind	varchar(10), --一账通黑名单客户标识
+	attr_reg_dt		Date, --注册日期
+	attr_upgraded_ind	varchar(10), --升级标识
+	attr_upgraded_dt	Date, --升级日期
+	attr_isrobot_ind	varchar(10), --是否刷机
+	attr_iphone		varchar(20), --手机号
+	reg_time_range_cd	varchar(10), --注册时间代码
+	activity_range		varchar(20), --活跃度
+	activity_channel	varchar(50), --当天最活跃渠道
+	activity_logins_cnt	int, --当天最活跃渠道登陆次数
+	app_activity_range	varchar(20), --App活跃程度
+	app_first_logon_dt	Date, --App首次登陆日期
+	app_latest_logon_dt	Date, --App最后一次登陆日期
+	app_activity_channel	varchar(50), --App当天最活跃频道
+	app_activity_logins_cnt	int, --App当天最活跃频道登陆次数
+	bind_annuity_ind	varchar(10), --年金标识
+	bind_group_ind		varchar(10), --团险标识
+	bind_health_ind		varchar(10), --健康险标识
+	bind_pension_ind	varchar(10), --养老险标识
+	bind_life_ind		varchar(10), --寿险标识
+	bind_property_ind	varchar(10), --产险标识
+	bind_fund_ind		varchar(10), --基金标识
+	bind_stock_ind		varchar(10), --证券标识
+	bind_trust_ind		varchar(10), --信托标识
+	bind_bank_ind		varchar(10), --银行标识
+	bind_credit_ind		varchar(10), --信用卡标识
+	bind_ewealth_ind	varchar(10), --财富E标识
+	bind_yqb_ind		varchar(10), --壹钱包
+	bind_lcb_ind		varchar(10), --理财宝
+	bind_wlt_ind		varchar(10), --万里通
+	bind_haofang_ind	varchar(10), --好房
+	bind_orange_ind		varchar(10), --橙子银行
+	bind_yzbt_ind		varchar(10), --一账通宝
+	bind_lufax_ind		varchar(10), --陆金所
+	bind_car_ind		varchar(10), --加挂车标识
+	bind_house_ind		varchar(10), --加挂房标识
+	bind_ex_credit_ind	varchar(10), --外部信用卡
+	bind_ex_bank_ind	varchar(10), --外部银行
+	bind_id_card_ind	varchar(10), --身份证标识
+	bind_booklet_ind	varchar(10), --户口本标识
+	bind_driving_license_ind	varchar(10), --驾驶证标识
+	bind_passport_ind	varchar(10), --护照
+	bind_permits_ind	varchar(10), --港奥通行证
+	bind_vehicle_license_ind	varchar(10), --行驶证
+	bind_housing_property_ind	varchar(10), --房产
+	bind_buz_card_ind	varchar(10), --名片
+	bind_mem_card_ind	varchar(10), --会员卡
+	bind_coupon_ind		varchar(10), --优惠券
+	bind_bill_ind		varchar(10), --票据
+	bind_oth_card_ind	varchar(10), --其他
+	bind_ex_account_cnt	int, --外部账户数
+	bind_car_cnt		int, --加挂车数
+	bind_house_cnt		int, --加挂房数
+	model_cmv		varchar(10), --客户价值
+	model_cmv_cal_ind	varchar(10), --客户价值可靠标识
+	model_cash_correlation		float, --货币类增益洗漱
+	model_fixed_correlation 	float, --固定收入类增益洗漱
+	model_equity_correlation	float, --股票类增益洗漱
+	model_risk_cluster		varchar(10), --客户风险偏好
+	model_churn_score		float, --客户流失分
+	model_churn_decile		int, --客户流失分位区间
+	model_1ztb_prop_score		float, --一账通宝开户倾向分
+	model_1ztb_prop_decile		int, --一账通宝开户倾向分位区间
+	model_stockf_prop_score	float, --股票型基金倾向分
+	model_stockf_prop_decile	int, --股票型基金倾向分位区间
+	model_presf_prop_score		float, --保本型基金倾向分
+	model_presf_prop_decile	int, --保本型基金倾向分位区间
+	model_bondf_prop_score		float, --债券型基金倾向分
+	model_bondf_prop_decile	int, --债券型基金倾向分位区间
+	model_cashf_prop_score		float, --货币型基金倾向分
+	model_cashf_prop_decile	int, --货币型基金倾向分位区间
+	model_mixedf_prop_score	float, --混合型基金倾向分
+	model_mixedf_prop_decile	int, --混合型基金倾向分位区间
+	model_lufax_prop_score		float, --陆金所资产倾向分
+	model_lufax_prop_decile	int, --陆金所资产倾向分位区间
+	propensity_autoins_score	float, --车险倾向分
+	propensity_autoins_decile	int, --车险倾向分位区间
+	propensity_loan_score		float, --贷款倾向分
+	propensity_loan_decile		int, --贷款倾向分位区间
+	propensity_fiscalprd_score	float, --银行理财产品倾向分
+	propensity_fiscalprd_decile	int, --银行理财产品倾向分位区间
+	propensity_credit_score	float, --信用卡倾向分
+	propensity_credit_decile	int, --信用卡倾向分位区间
+	propensity_fund_score		float, --基金倾向分
+	propensity_fund_decile		int, --基金倾向分位区间
+	propensity_bond_score		float, --证券倾向分
+	propensity_bond_decile		int, --证券倾向分位区间
+	propensity_trust_score		float, --信托倾向分
+	propensity_trust_decile	int, --信托倾向分位区间
+	propensity_smallpur_score	float, --小消倾向分
+	propensity_smallpur_decile	int, --小消倾向分位区间
+	propensity_familyproins_score		float, --家财险倾向分
+	propensity_familyproins_decile		int, --家财险倾向分位区间
+	propensity_pension_score	float, --养老险倾向分
+	propensity_pension_decile	int, --养老险倾向分位区间
+	created_date			Date --数据创建时间
+	);
