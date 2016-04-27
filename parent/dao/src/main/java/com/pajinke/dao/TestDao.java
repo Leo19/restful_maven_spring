@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +48,35 @@ public class TestDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		String sql = "select * from t_user " + whereSql;
-//		String sql = "select * from table_test " + whereSql;
+//		String sql = "select * from t_user " + whereSql;
+		String sql = "select * from dw_label_data_tab " + whereSql;
 		logger.info(sql);
+//		sql+= " limit 10";
 		return jdbcTemplate.queryForList(sql, params);
+	}
+	
+	public Object quickCount(String whereSql, Object... params){
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		try {
+			dataSource.getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+//		String sql = "select * from t_user " + whereSql;
+		String sql = "select count(*) from dw_label_data_tab " + whereSql;
+		logger.info(sql);
+//		sql+= " limit 10";
+		return jdbcTemplate.queryForObject(sql, params, Integer.class);
+	}
+	
+	public void save(String sql, Object... objects) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		try {
+			dataSource.getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		int i = jdbcTemplate.update(sql, objects);
 	}
 }
 

@@ -1,14 +1,8 @@
 package com.pajinke.controllers;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.springframework.core.convert.Property;
 //import com.pajinke.vo.json.*;
 //import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -20,10 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pajinke.bo.UserBo;
-import com.pajinke.entity.LabelData;
-import com.pajinke.service.TestService;
 import com.pajinke.vo.ResponseVo;
 import com.pajinke.vo.User;
 
@@ -32,12 +23,8 @@ import com.pajinke.vo.User;
  */
 @Controller
 public class TestController {
-    private static final Logger logger = Logger.getLogger(TestController.class);
     private final String text = "text/plain;charset=UTF-8";
     private final String json = "application/json;charset=UTF-8";
-
-    private static final int DEF_INT = -1;
-
 
 
     @RequestMapping(value = "/hi", produces = text)
@@ -78,9 +65,9 @@ public class TestController {
 
     @RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserBo>> getUsers() {
-        List<UserBo> datas = TestService.getTestDatas();
-        System.out.printf("[%s]\t\n", System.currentTimeMillis());
-        return new ResponseEntity<List<UserBo>>(datas, HttpStatus.OK);
+//        System.out.printf("[%s]\t\n", System.currentTimeMillis());
+//        return new ResponseEntity<List<UserBo>>(datas, HttpStatus.OK);
+    	return null;
     }
 
 //    public static void main(String args[]) {

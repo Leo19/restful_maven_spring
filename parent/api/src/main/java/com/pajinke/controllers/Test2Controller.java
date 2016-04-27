@@ -1,9 +1,9 @@
 package com.pajinke.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.ServletRequest;
 
@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pajinke.api.util.Servlets;
 import com.pajinke.service.TestService;
-import com.pajinke.util.persistence.SearchFilter;
+import com.pajinke.util.mapper.JsonMapper;
+import com.pajinke.util.persistence.Page;
 import com.pajinke.vo.ResponseVo;
 import com.pajinke.vo.User;
 
@@ -96,14 +97,48 @@ public class Test2Controller {
     	
     	return list;
     }
+    /**
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/quickQuery")
     @ResponseBody
     public Object quickQuery(ServletRequest request) {
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
 		List<Map<String, Object>> list = testService.quickQuery(searchParams);
-		
-		
-    	return list;
+		JsonMapper jsonMapper = new JsonMapper();
+		String jsonp = jsonMapper.toJsonP("callback", list);
+    	return jsonp;
     }
     
+    /**
+     * http://localhost:8080/pajinke/api/quickPage?search_EQ_attr_zodiac=%E7%BE%8A&pageNo=1&pageSize=100
+     * @param request
+     * @param fields
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping(value = "/quickPage", produces = "application/javascript; charset=UTF-8")
+    @ResponseBody
+    public Object quickPage(ServletRequest request, String fields, Integer pageNo, Integer pageSize, String callback) {
+		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
+		request.getParameterMap();
+		Page page = new Page(pageNo, pageSize);
+		
+		page = testService.quickPage(searchParams, page);
+		JsonMapper jsonMapper = new JsonMapper();
+		String jsonp = jsonMapper.toJsonP(callback, page);
+//		System.out.println(jsonp);
+    	return jsonp;
+    }
+    
+    public static void main(String[] args) {
+
+		JsonMapper jsonMapper = new JsonMapper();
+		Map m = new HashMap();
+		m.put("name", "amu");
+		String jsonp = jsonMapper.toJsonP("callback", m);
+		System.out.println(jsonp);
+	}
 }

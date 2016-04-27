@@ -21,10 +21,16 @@ public class TestDaoTest extends AbstractJUnit4SpringContextTests {
 		System.out.println(list.size());
 	}
 	
-	@Test
+	//@Test
 	public void testTestDao() {
 		List list = testDaoImpl.quickQuery("where id in (?, ?)", new Object[]{1, 2});
 		System.out.println(list.size());
 	}
 
+	@Test
+	public void testLabelDataDao() {
+		Object rows = testDaoImpl.quickCount("where 1=1 and attr_age = ?", 18);
+		System.out.println(rows);
+	}
+	
 }

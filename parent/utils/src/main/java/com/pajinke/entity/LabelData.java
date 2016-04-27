@@ -2,8 +2,6 @@ package com.pajinke.entity;
 
 import java.util.Date;
 
-import com.pajinke.mock.data.annotation.MockList;
-
 /**
  * Created by Leo on 16/4/12.
  */

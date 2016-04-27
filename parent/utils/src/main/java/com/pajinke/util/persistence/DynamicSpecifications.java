@@ -11,8 +11,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.pajinke.util.Collections3;
 import com.pajinke.util.Reflections;
+import com.pajinke.util.UserProfileAttributes;
 
 public class DynamicSpecifications {
 
@@ -37,6 +40,11 @@ public class DynamicSpecifications {
 				switch (filter.operator) {
 				case EQ:
 					sqlBuf.append(" = ? ");
+					valueList.add(valueTypeCast(entityClazz, filter.fieldName, filter.value.toString()));
+					System.out.println("====================="+filter.value.toString());
+					break;
+				case NEQ:
+					sqlBuf.append(" != ? ");
 					valueList.add(valueTypeCast(entityClazz, filter.fieldName, filter.value.toString()));
 					break;
 				case LIKE:
@@ -63,10 +71,13 @@ public class DynamicSpecifications {
 					break;
 				case IN:
 					Object[] values = null;
+					System.out.println(filter.value.getClass());
 					if (filter.value instanceof Object[]) {
 						values = (Object[])filter.value;
 					} else if (filter.value instanceof Collection) {
 						values = ((Collection)filter.value).toArray();
+					} else {
+						values = new Object[]{filter.value};
 					}
 					
 					if (values == null || values.length == 0) {
@@ -81,6 +92,31 @@ public class DynamicSpecifications {
 						}
 						
 						valueList.add(valueTypeCast(entityClazz, filter.fieldName, values[i].toString()));
+					}
+					sqlBuf.append(" )");
+					break;
+				case NIN:
+					Object[] valuesNotIn = null;
+					if (filter.value instanceof Object[]) {
+						valuesNotIn = (Object[])filter.value;
+					} else if (filter.value instanceof Collection) {
+						valuesNotIn = ((Collection)filter.value).toArray();
+					} else {
+						valuesNotIn = new Object[]{filter.value};
+					}
+					
+					if (valuesNotIn == null || valuesNotIn.length == 0) {
+						continue;
+					}
+
+					sqlBuf.append(" not in (");
+					for (int i = 0; i < valuesNotIn.length; i ++) {
+						sqlBuf.append("?");
+						if (i < valuesNotIn.length - 1) {
+							sqlBuf.append(",");
+						}
+						
+						valueList.add(valueTypeCast(entityClazz, filter.fieldName, valuesNotIn[i].toString()));
 					}
 					sqlBuf.append(" )");
 					break;
@@ -109,10 +145,78 @@ public class DynamicSpecifications {
 			return Integer.parseInt(value);
 		} else if (fieldType == Long.class) {
 			return Long.parseLong(value);
+		} else if (fieldType == Double.class) {
+			return Double.parseDouble(value);
+		} else if (fieldType == Float.class) {
+			return Float.parseFloat(value);
 		} else if (fieldType == Date.class) {
 			return new Date(Long.parseLong(value));
 		} else {
 			return value;
 		}
+	}
+	
+	public static String parseSelFromColumn(String strColumn) {
+		if(StringUtils.isBlank(strColumn)){
+			return " select * from dw_label_data_tab";
+		} else {
+			String[] columnNames = strColumn.split(",");
+			
+			if(columnNames == null || columnNames.length <= 0) {
+				return " select * from dw_label_data_tab";
+			} else {
+				// 由于列名由接口调用方指定，检测列名，有错误的抛异常
+				if(checkColumnName(columnNames)) {
+					return null;
+				}
+				StringBuffer sqlBuffer = new StringBuffer("select ");
+				for(int i = 0 ; i < columnNames.length ; ++i) {
+					sqlBuffer.append(columnNames[i]);
+					if(i != columnNames.length - 1) {
+						sqlBuffer.append(",");
+					}
+				}
+				sqlBuffer.append(" from dw_label_data_tab");
+				System.out.println(" select SQL:"+sqlBuffer.toString());
+				return sqlBuffer.toString();
+			}
+		}
+	}
+	
+	/**
+	 * 对接口调用方指定的字段名称check
+	 * @return 返回true则证明有列名错误
+	 * Author: Leo
+	 * Date:2016年4月21日 下午6:49:09
+	 */
+	private static boolean checkColumnName(String[] speColNames) {
+		// 数据库字段对应的javaBean，属性和column名字是一一对应的
+		String[] realColNames = UserProfileAttributes.attrs;
+		
+		// 返回结果
+		boolean hasWrongColumnName = false;
+		
+		// 双重循环确定所有的列名都没写错
+		for(int i = 0 ; i < speColNames.length ; ++i) {
+			boolean isAColumn = false;
+			// 属性名字没写错，确实存在，则结束内循环
+			String speColName = speColNames[i];
+			for(int j = 0 ; j < realColNames.length ; ++j) {
+				if(speColName.equals(realColNames[j])){
+					isAColumn = true;
+					break;
+				}
+			}
+			
+			// 有写错的列名
+			if(!isAColumn) {
+				hasWrongColumnName = true;
+				break;
+			} else {
+				continue;
+			}
+		}
+		
+		return hasWrongColumnName;
 	}
 }
